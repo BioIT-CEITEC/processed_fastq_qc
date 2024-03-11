@@ -1,0 +1,223 @@
+{
+  "workflow_description": {
+    "name": "cleaned_fastq_qc",
+    "version": 2.0,
+    "label": "Cleaned fastq QC",
+    "type": "cleaned_fastq_qc",
+    "run_parameters": {
+      "cpu": 30,
+      "memory": 65
+    },
+    "inputs": "raw_fastq/{sample}*fastq.gz",
+    "outputs": [
+      "processed_fastq/{sample}*fastq.gz",
+      "logs/*",
+      "qc_reports/*"
+    ],
+    "report_index": "qc_reports/processed_fastq_multiqc.html",
+    "reports": [
+      "qc_reports/*"
+    ]
+  },
+  "general_params": [
+    "entity_name",
+    "sample_name"
+  ],
+  "requested_params": [
+    "is_paired"
+  ],
+  "gui_params": {
+    "primary": {
+      "UMI": {
+        "label": "UMI",
+        "type": "enum",
+        "default": "no_umi",
+        "list": {
+          "no_umi": "No UMI",
+          "BRONCO": "BRONCO",
+          "Quantseq FWD": "Quantseq FWD",
+          "CORALL": "CORALL",
+          "custom_umi": "Custom specified UMI",
+          "CS_UMI": "CS_UMI",
+          "CS_UMI_sep_file": "CS_UMI_sep_file",
+          "IDT": "IDT",
+          "BRB": "BRB",
+          "LYNX": "LYNX",
+          "Qiaseq": "Qiaseq",
+          "TruSight_Oncology": "TruSight Oncology UMI"
+        }
+      }
+    },
+    "detailed": {
+      "base_mask_field": {
+       "label": "Base mask field",
+        "type": "string",
+        "default": "",
+        "conditions": {
+          "value": {
+            "UMI": {
+              "BRONCO": "y*,I*,y*,y*",
+              "LYNX": "y*,I*,y*,y*"
+            }
+          }
+        }
+      },
+      "trim_adapters": {
+        "label": "Trim adapters",
+        "type": "bool",
+        "default": true
+      },
+      "trim_adapter_select": {
+        "label": "Trim adapter selection",
+        "type": "enum",
+        "default": "illumina",
+        "list": {
+          "illumina": "Illumina (AGATCGGAAGAGC)",
+          "nextera": "Nextera (CTGTCTCTTATA)",
+          "smallRNA": "small RNA (TGGAATTCTCGG)",
+          "custom": "Custom"
+        },
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "trim_adapters": true
+            }
+          }
+        }
+      },
+      "adapter_seq": {
+        "label": "Adapter sequence (1-xx,2-yy,zz)",
+        "type": "string",
+        "default": "",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "trim_adapter_select": "custom"
+            }
+          }
+        }
+      },
+      "adapter_type": {
+        "label": "Adapter type",
+        "type": "enum",
+        "default": "a",
+        "list": {
+          "a": "Regular 3 prime",
+          "g": "Regular 5 prime",
+          "b": "Both type"
+        },
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "trim_adapters": true
+            }
+          }
+        }
+      },
+      "max_error": {
+        "label": "Max error",
+        "type": "string",
+        "default": "0.1",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "trim_adapters": true
+            }
+          }
+        }
+      },
+      "min_overlap": {
+        "label": "Min overlap",
+        "type": "int",
+        "default": 3,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "trim_adapters": true
+            }
+          }
+        }
+      },
+      "quality_trim": {
+        "label": "Quality trimming (5’ cutoff,3’ cutoff)",
+        "type": "string",
+        "default": "0,20"
+      },
+      "cut_left1": {
+        "label": "Cut left 1",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "value": {
+            "RNAseq_type": {
+              "quant_fwd": 12,
+              "sense": 9
+            },
+            "UMI": {
+              "Quantseq FWD": 6
+            }
+          }
+        }
+      },
+      "cut_left2": {
+        "label": "Cut left 2",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "value": {
+            "RNAseq_type": {
+              "quant_rev": 12,
+              "sense": 6
+            }
+          }
+        }
+      },
+      "cut_right1": {
+        "label": "Cut right 1",
+        "type": "int",
+        "default": 0
+      },
+      "cut_right2": {
+        "label": "Cut right 2",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "value": {
+            "UMI": {
+              "CORALL": 9
+            }
+          }
+        }
+      },
+      "min_length": {
+        "label": "Min length",
+        "type": "int",
+        "default": 35
+      },
+      "max_length": {
+        "label": "Max length",
+        "type": "int",
+        "default": 250
+      },
+      "quality_base": {
+        "label": "Quality base",
+        "type": "enum",
+        "default": "33",
+        "list": {
+          "33": "phred-33",
+          "64": "phred-64"
+        }
+      }
+    }
+  }
+}
