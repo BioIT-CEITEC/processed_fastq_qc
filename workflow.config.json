@@ -1,6 +1,6 @@
 {
   "workflow_description": {
-    "name": "cleaned_fastq_qc",
+    "name": "processed_fastq_qc",
     "version": 2.0,
     "label": "Processed fastq QC",
     "type": "processed_fastq_qc",
