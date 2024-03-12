@@ -198,7 +198,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
         out_R2 = snakemake.output.R2[:-3]
 
         command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
-                  " awk '{{ if(NR%4==1) {{split($1,head_R1,\" \"); split($2,head_R2,\" \")}}" + \
+                  " awk '{{ if(NR%4==1) {{split($1,head_R1,\"/\"); split($2,head_R2,\"/\")}}" + \
                   " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"_\" umi \" \" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
                   " print head_R2[1] \"_\" umi \" \" head_R2[2] \"\\n\" substr($2,7) > out2}} else if(NR%4==0) {{print substr($1,7) > out1;" + \
                   " print substr($2,7) > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + \
