@@ -182,23 +182,72 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
         # shell("rm "+in_filename_R2)
 
     elif umi == "CS_UMI_sep_file":
-
         umi_file = os.path.dirname(snakemake.output.R2) + "/" + sample + ".UMI.fastq"
         out_R1 = snakemake.output.R1[:-3]
         out_R2 = snakemake.output.R2[:-3]
 
-        command = "(paste -d '' <(zcat " + in_filename + " | awk '{{ if(NR%4==2 || NR%4==0) {{print substr($0,1,3); print substr($0,7) > out}} else {{print $0; print $0 > out}} }}' out=" + out_R1 + ") <(zcat " + in_filename_R2 + " | awk '{{ if(NR%4==2 || NR%4==0) {{print substr($0,1,3); print substr($0,7) > out}} else {{print \"\"; print $0 > out}} }}' out=" + out_R2 + ") > " + umi_file + " && gzip -f " + out_R1 + " " + out_R2 + ") 2>> " + log_filename
+        # Command to decompress the first line of the file and capture the output
+        command = "zcat " + in_filename + " | head -n 1"
+
+        # Execute the command
+        output = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0]
+        first_line = str(output, 'utf-8')
+
+        # Check if the first line contains " " or "/"
+        if " " in first_line:
+            sep = " "
+        elif "/" in first_line:
+            sep = "/"
+
+        command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
+                  " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
+                  " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"" + sep + "3\" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
+                  " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2,7) > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1,7) > out1;" + \
+                  " print substr($2,7) > out2; print substr($1,7)substr($2,7) > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + " umi_out=" + umi_file + \
+                  " && gzip -f " + out_R1 + " " + out_R2 + ") 2>> " + log_filename
         with open(log_filename, 'at') as f:
             f.write("## COMMAND: " + command + "\n")
         shell(command)
+
+        # umi_file = os.path.dirname(snakemake.output.R2) + "/" + sample + ".UMI.fastq"
+        # out_R1 = snakemake.output.R1[:-3]
+        # out_R2 = snakemake.output.R2[:-3]
+        #
+        # command = "(paste -d '' <(zcat " + in_filename + " | awk '{{ if(NR%4==2 || NR%4==0) {{print substr($0,1,3); print substr($0,7) > out}} else {{print $0; print $0 > out}} }}' out=" + out_R1 + ") <(zcat " + in_filename_R2 + " | awk '{{ if(NR%4==2 || NR%4==0) {{print substr($0,1,3); print substr($0,7) > out}} else {{print \"\"; print $0 > out}} }}' out=" + out_R2 + ") > " + umi_file + " && gzip -f " + out_R1 + " " + out_R2 + ") 2>> " + log_filename
+        # with open(log_filename, 'at') as f:
+        #     f.write("## COMMAND: " + command + "\n")
+        # shell(command)
+        #
+        # command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
+        #           " awk '{{ if(NR%4==1) {{split($1,head_R1,\"/\"); split($2,head_R2,\"/\")}}" + \
+        #           " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"_\" umi \" \" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
+        #           " print head_R2[1] \"_\" umi \" \" head_R2[2] \"\\n\" substr($2,7) > out2}} else if(NR%4==0) {{print substr($1,7) > out1;" + \
+        #           " print substr($2,7) > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + \
+        #           " && gzip -f " + out_R1 + " " + out_R2 + ") 2>> " + log_filename
+        # with open(log_filename, 'at') as f:
+        #     f.write("## COMMAND: " + command + "\n")
+        # shell(command)
 
 
     elif umi == "CS_UMI":
         out_R1 = snakemake.output.R1[:-3]
         out_R2 = snakemake.output.R2[:-3]
 
+        # Command to decompress the first line of the file and capture the output
+        command = "zcat " + in_filename + " | head -n 1"
+
+        # Execute the command
+        output = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).communicate()[0]
+        first_line = str(output, 'utf-8')
+
+        # Check if the first line contains " " or "/"
+        if " " in first_line:
+            sep = " "
+        elif "/" in first_line:
+            sep = "/"
+
         command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
-                  " awk '{{ if(NR%4==1) {{split($1,head_R1,\"/\"); split($2,head_R2,\"/\")}}" + \
+                  " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
                   " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"_\" umi \" \" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
                   " print head_R2[1] \"_\" umi \" \" head_R2[2] \"\\n\" substr($2,7) > out2}} else if(NR%4==0) {{print substr($1,7) > out1;" + \
                   " print substr($2,7) > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + \
