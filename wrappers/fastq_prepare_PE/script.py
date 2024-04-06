@@ -2,6 +2,7 @@
 # wrapper for rule: fastq_prepare_PE
 ######################################
 import os
+import subprocess
 import re
 import gzip
 from snakemake.shell import shell
