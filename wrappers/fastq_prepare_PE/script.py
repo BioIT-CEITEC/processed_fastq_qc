@@ -202,9 +202,9 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
 
         command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
                   " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
-                  " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"" + sep + "3\" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
+                  " else if(NR%4==2) {{umi=substr($1,1,3)substr($2,1,3); print head_R1[1] \"" + sep + "\" head_R1[2] \"\\n\" substr($1,7) > out1;" + \
                   " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2,7) > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1,7) > out1;" + \
-                  " print substr($2,7) > out2; print substr($1,7)substr($2,7) > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + " umi_out=" + umi_file + \
+                  " print substr($2,7) > out2; print substr($1,1,3)substr($2,1,3) > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + " umi_out=" + umi_file + \
                   " && gzip -f " + out_R1 + " " + out_R2 + ") 2>> " + log_filename
         with open(log_filename, 'at') as f:
             f.write("## COMMAND: " + command + "\n")
