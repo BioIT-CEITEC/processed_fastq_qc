@@ -79,7 +79,7 @@
       },
       "UMI_from_R3_file": {
         "label": "UMI is in demultiplexed R3 file.",
-        "type": "bolean",
+        "type": "bool",
         "default": false,
         "conditions": {
           "relevance": {
