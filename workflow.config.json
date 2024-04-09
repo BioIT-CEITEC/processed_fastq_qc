@@ -53,12 +53,13 @@
       },
       "UMI_write_to": {
         "label": "Where to record the UMIs.",
+        "type": "enum",
+        "default": "fastq_header",
         "list": {
           "fastq_header": "Fastq header",
           "sep_file": "Separate UMI fastq",
           "sep_file_gz": "Separate UMI fastq.gz"
         },
-        "default": "fastq_header",
         "conditions": {
           "relevance": {
             "operand": "equal",

@@ -1,6 +1,4 @@
 import os
-import pandas as pd
-import json
 from snakemake.utils import min_version
 
 min_version("5.18.0")
