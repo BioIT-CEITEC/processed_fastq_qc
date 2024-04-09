@@ -94,7 +94,7 @@
       "UMI_R1_start": {
         "label": "Start of UMI in R1.",
         "type": "int",
-        "default": 3,
+        "default": 0,
         "conditions": {
           "relevance": {
             "operand": "equal",
@@ -108,7 +108,117 @@
             "UMI": {
               "CS_UMI": 1,
               "CS_UMI_sep_file": 1,
+              "CORALL": 1
+            }
+          }
+        }
+      },
+      "UMI_R1_end": {
+        "label": "End of UMI in R1.",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 3,
+              "CS_UMI_sep_file": 3,
               "CORALL": 12
+            }
+          }
+        }
+      },
+      "insert_R1_start": {
+        "label": "Start of insert sequence in R1.",
+        "type": "int",
+        "default": 1,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 6,
+              "CS_UMI_sep_file": 6,
+              "CORALL": 24
+            }
+          }
+        }
+      },
+      "UMI_R2_start": {
+        "label": "Start of UMI in R2.",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 1,
+              "CS_UMI_sep_file": 1,
+              "CORALL": 0
+            }
+          }
+        }
+      },
+      "UMI_R2_end": {
+        "label": "End of UMI in R2.",
+        "type": "int",
+        "default": 0,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 3,
+              "CS_UMI_sep_file": 3,
+              "CORALL": 0
+            }
+          }
+        }
+      },
+      "insert_R2_start": {
+        "label": "Start of insert sequence in R2.",
+        "type": "int",
+        "default": 1,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 6,
+              "CS_UMI_sep_file": 6,
+              "CORALL": 1
             }
           }
         }
