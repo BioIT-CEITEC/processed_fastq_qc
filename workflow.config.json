@@ -39,9 +39,9 @@
         "list": {
           "no_umi": "No UMI",
           "BRONCO": "BRONCO",
+          "custom_umi": "Custom specified UMI",
           "Quantseq FWD": "Quantseq FWD",
           "CORALL": "CORALL",
-          "custom_umi": "Custom specified UMI",
           "CS_UMI": "CS_UMI",
           "CS_UMI_sep_file": "CS_UMI_sep_file",
           "IDT": "IDT",
@@ -50,22 +50,70 @@
           "Qiaseq": "Qiaseq",
           "TruSight_Oncology": "TruSight Oncology UMI"
         }
-      }
-    },
-    "detailed": {
-      "base_mask_field": {
-       "label": "Base mask field",
-        "type": "string",
-        "default": "",
+      },
+      "UMI_write_to": {
+        "label": "Where to record the UMIs.",
+        "list": {
+          "fastq_header": "Fastq header",
+          "sep_file": "Separate UMI fastq",
+          "sep_file_gz": "Separate UMI fastq.gz"
+        },
+        "default": "fastq_header",
         "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi"
+            }
+          },
           "value": {
             "UMI": {
-              "BRONCO": "y*,I*,y*,y*",
-              "LYNX": "y*,I*,y*,y*"
+              "CS_UMI": "fastq_header",
+              "CS_UMI_sep_file": "sep_file",
+              "CORALL": "fastq_header"
             }
           }
         }
       },
+      "UMI_from_R3_file": {
+        "label": "UMI is in demultiplexed R3 file.",
+        "type": "bolean",
+        "default": false,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi"
+            }
+          }
+        }
+      },
+      "UMI_R1_start": {
+        "label": "Start of UMI in R1.",
+        "type": "int",
+        "default": 3,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "UMI": "custom_umi",
+              "UMI_from_R3_file": false
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": 1,
+              "CS_UMI_sep_file": 1,
+              "CORALL": 12
+            }
+          }
+        }
+      }
+    },
+    "detailed": {
       "trim_adapters": {
         "label": "Trim adapters",
         "type": "bool",
