@@ -38,15 +38,13 @@
         "default": "no_umi",
         "list": {
           "no_umi": "No UMI",
-          "BRONCO": "BRONCO",
           "custom_umi": "Custom specified UMI",
-          "Quantseq FWD": "Quantseq FWD",
-          "CORALL": "CORALL",
           "CS_UMI": "CS_UMI",
           "CS_UMI_sep_file": "CS_UMI_sep_file",
-          "IDT": "IDT",
-          "BRB": "BRB",
+          "Quantseq FWD": "Quantseq FWD",
+          "CORALL": "CORALL",
           "LYNX": "LYNX",
+          "BRONCO": "BRONCO",
           "Qiaseq": "Qiaseq",
           "TruSight_Oncology": "TruSight Oncology UMI"
         }
@@ -72,7 +70,12 @@
             "UMI": {
               "CS_UMI": "fastq_header",
               "CS_UMI_sep_file": "sep_file",
-              "CORALL": "fastq_header"
+              "Quantseq FWD": "fastq_header",
+              "CORALL": "fastq_header",
+              "LYNX": "sep_file",
+              "BRONCO": "fastq_header",
+              "Qiaseq": "fastq_header",
+              "TruSight_Oncology": "fastq_header"
             }
           }
         }
@@ -87,6 +90,18 @@
             "negation": false,
             "values": {
               "UMI": "custom_umi"
+            }
+          },
+          "value": {
+            "UMI": {
+              "CS_UMI": false,
+              "CS_UMI_sep_file": false,
+              "Quantseq FWD": false,
+              "CORALL": false,
+              "LYNX": true,
+              "BRONCO": true,
+              "Qiaseq": false,
+              "TruSight_Oncology": false
             }
           }
         }
@@ -108,7 +123,12 @@
             "UMI": {
               "CS_UMI": 1,
               "CS_UMI_sep_file": 1,
-              "CORALL": 1
+              "Quantseq FWD": 1,
+              "CORALL": 1,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 0,
+              "TruSight_Oncology": 1
             }
           }
         }
@@ -130,7 +150,12 @@
             "UMI": {
               "CS_UMI": 3,
               "CS_UMI_sep_file": 3,
-              "CORALL": 12
+              "Quantseq FWD": 6,
+              "CORALL": 12,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 0,
+              "TruSight_Oncology": 6
             }
           }
         }
@@ -150,9 +175,14 @@
           },
           "value": {
             "UMI": {
-              "CS_UMI": 6,
-              "CS_UMI_sep_file": 6,
-              "CORALL": 24
+              "CS_UMI": 7,
+              "CS_UMI_sep_file": 7,
+              "Quantseq FWD": 7,
+              "CORALL": 13,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 1,
+              "TruSight_Oncology": 7
             }
           }
         }
@@ -174,7 +204,12 @@
             "UMI": {
               "CS_UMI": 1,
               "CS_UMI_sep_file": 1,
-              "CORALL": 0
+              "Quantseq FWD": 0,
+              "CORALL": 0,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 1,
+              "TruSight_Oncology": 1
             }
           }
         }
@@ -196,7 +231,12 @@
             "UMI": {
               "CS_UMI": 3,
               "CS_UMI_sep_file": 3,
-              "CORALL": 0
+              "Quantseq FWD": 0,
+              "CORALL": 0,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 12,
+              "TruSight_Oncology": 6
             }
           }
         }
@@ -216,9 +256,14 @@
           },
           "value": {
             "UMI": {
-              "CS_UMI": 6,
-              "CS_UMI_sep_file": 6,
-              "CORALL": 1
+              "CS_UMI": 7,
+              "CS_UMI_sep_file": 7,
+              "Quantseq FWD": 1,
+              "CORALL": 1,
+              "LYNX": 0,
+              "BRONCO": 0,
+              "Qiaseq": 24,
+              "TruSight_Oncology": 7
             }
           }
         }
