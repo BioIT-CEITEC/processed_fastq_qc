@@ -18,6 +18,9 @@
       "logs/{sample}/processed_fastqc_*.log",
       "logs/merge_fastq_qc.log"
     ],
+    "outputs_optional": [
+      "logs/filesender.log"
+    ],
     "report_index": "qc_reports/processed_fastq_multiqc.html",
     "reports": [
       "qc_reports/*"
@@ -424,6 +427,39 @@
         "list": {
           "33": "phred-33",
           "64": "phred-64"
+        }
+      },
+      "filesender": {
+        "label": "FileSender",
+        "type": "bool",
+        "default": false
+      },
+      "recipient": {
+        "label": "Send results to (comma separated list of emails):",
+        "type": "string",
+        "default": "cfg@ceitec.muni.cz",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "filesender": true
+            }
+          }
+        }
+      },
+      "message": {
+        "label": "Message for recipient:",
+        "type": "string",
+        "default": "Dear customer, we are sending you the prepared fastq files from your sequencing. You have 29 days to download data. Thank you for using our facility. Best regards, Core facility of Bioinformatics and Genomics team.",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "filesender": true
+            }
+          }
         }
       }
     }

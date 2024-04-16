@@ -31,6 +31,12 @@ wildcard_constraints:
 rule all:
     input: "qc_reports/processed_fastq_multiqc.html"
 
+if config["filesender"]:
+    return ["sequencing_results.tar.gz","qc_reports/processed_fastq_multiqc.html"]
+else:
+    return "qc_reports/processed_fastq_multiqc.html"
+
+
 ##### Modules #####
 
 include: "rules/trimming.smk"
