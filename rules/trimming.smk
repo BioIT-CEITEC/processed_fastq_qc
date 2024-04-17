@@ -1,30 +1,3 @@
-rule merge_fastq_qc:
-    input: html=expand("qc_reports/{sample}/processed_fastqc/{read_pair_tag}_trim_fastqc.html",sample=sample_tab.sample_name,read_pair_tag=read_pair_tags)
-    output: html="qc_reports/processed_fastq_multiqc.html"
-    log: "logs/merge_fastq_qc.log"
-    conda: "../wrappers/merge_fastq_qc/env.yaml"
-    script: "../wrappers/merge_fastq_qc/script.py"
-
-
-def processed_fastq_qc_input(wildcards):
-    preprocessed = "processed_fastq"
-    if read_pair_tags == ["SE"]:
-        return os.path.join(preprocessed,"{sample}.fastq.gz")
-    else:
-        return os.path.join(preprocessed,"{sample}_{read_pair_tags}.fastq.gz")
-
-
-rule processed_fastq_qc:
-    input: processed=processed_fastq_qc_input,
-    output: html="qc_reports/{sample}/processed_fastqc/{read_pair_tags}_trim_fastqc.html",
-    log: "logs/{sample}/processed_fastqc_{read_pair_tags}.log"
-    params: extra="--noextract --format fastq --nogroup",
-        paired=config["is_paired"]
-    threads: 2
-    conda: "../wrappers/processed_fastq_qc/env.yaml"
-    script: "../wrappers/processed_fastq_qc/script.py"
-
-
 def preprocess_fastq_input(wildcards):
     if config["UMI"] == "no_umi":
         return expand("raw_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag)
@@ -33,7 +6,7 @@ def preprocess_fastq_input(wildcards):
 
 
 rule preprocess:
-    input: fastq=preprocess_fastq_input,
+    input: fastq=expand("umi_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag),
     output: processed=expand("processed_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag),
     log: "logs/{sample}/preprocessing.log"
     threads: 10

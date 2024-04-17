@@ -19,7 +19,13 @@
       "logs/merge_fastq_qc.log"
     ],
     "outputs_optional": [
-      "logs/filesender.log"
+      "logs/filesender.log",
+      "qc_reports/{sample}/biobloom/{sample}.biobloom_summary.tsv",
+      "logs/{sample}/biobloom.log",
+      "qc_reports/species_detector_summary_mqc.tsv",
+      "logs/merge_detected_species.log",
+      "qc_reports/{sample}/species_detector/{sample}*.species_stats.tsv",
+      "logs/{sample}/species_detector*.log"
     ],
     "report_index": "qc_reports/processed_fastq_multiqc.html",
     "reports": [
@@ -444,6 +450,58 @@
             "negation": false,
             "values": {
               "filesender": true
+            }
+          }
+        }
+      },
+      "biobloom": {
+        "label": "Biobloom tools",
+        "type": "bool",
+        "default": false
+      },
+      "biobloom_ref": {
+        "label": "Biobloom reference species",
+        "type": "string",
+        "default": "H.sapiens;M.musculus;A.thaliana;D.melanogaster;C.elegans;S.cerevisiae",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "biobloom": true
+            }
+          }
+        }
+      },
+      "species_detector": {
+        "label": "Species detector",
+        "type": "bool",
+        "default": false
+      },
+      "max_reads_for_sp_detector": {
+        "label": "Number of reads to use for species detection",
+        "type": "int",
+        "default": 1000,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "species_detector": true
+            }
+          }
+        }
+      },
+      "evalue_for_sp_detector": {
+        "label": "E-value cutof for species detection",
+        "type": "string",
+        "default": "1e-15",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "species_detector": true
             }
           }
         }

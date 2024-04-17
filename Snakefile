@@ -24,20 +24,33 @@ read_pair_tags = BR.set_read_pair_qc_tags() # ["SE"] / ["R1", "R2"]
 pair_tag = BR.set_read_pair_tags() # [""] / ["_R1", "_R2"]
 paired = BR.set_paired_tags() # "SE" / "PE"
 
+if not 'species_detector' in config:
+    config['species_detector'] = False
+if not "max_reads_for_sp_detector" in config:
+    config["max_reads_for_sp_detector"] = 1000
+if not "evalue_for_sp_detector" in config:
+    config["evalue_for_sp_detector"] = 1e-15
+
 wildcard_constraints:
     sample = "|".join(sample_tab.sample_name)
+
+
+def all_input(wildcard):
+    if config["filesender"]:
+        return ["sequencing_results.tar.gz","qc_reports/processed_fastq_multiqc.html"]
+    else:
+        return "qc_reports/processed_fastq_multiqc.html"
 
 ##### Target rules #####
 rule all:
     input: "qc_reports/processed_fastq_multiqc.html"
 
-if config["filesender"]:
-    return ["sequencing_results.tar.gz","qc_reports/processed_fastq_multiqc.html"]
-else:
-    return "qc_reports/processed_fastq_multiqc.html"
+
 
 
 ##### Modules #####
 
+include: "rules/fastqc.smk"
+include: "rules/species_detection.smk"
 include: "rules/trimming.smk"
 include: "rules/fastq_prepare.smk"
