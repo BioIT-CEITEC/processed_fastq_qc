@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from snakemake.shell import shell
+import json
 
 log_filename = str(snakemake.log)
 
@@ -19,6 +20,48 @@ f = open(log_filename, 'at')
 f.write("## CREATE_OUTPUT_DIR: " + command + "\n")
 f.close()
 shell(command)
+
+
+def load_and_configure_UMI(wf_config_path,config):
+    with open(wf_config_path, 'r') as file:
+        wf_config = json.load(file)
+
+    # Extract the primary GUI parameters from the config
+    primary_gui_params = wf_config['gui_params']['primary']
+
+    # Initialize the dictionary to store UMI settings
+    umi_settings = {}
+
+    # The list of parameters we're interested in setting based on UMI type
+    param_keys = [
+        "UMI_write_to","UMI_R1_start", "UMI_R1_end", "insert_R1_start",
+        "UMI_R2_start", "UMI_R2_end", "insert_R2_start"
+    ]
+
+    # Extract values for each UMI type under each parameter key
+    for umi_type in primary_gui_params['UMI']['list'].keys():
+        settings = {}
+        for param_key in param_keys:
+            if 'conditions' in primary_gui_params[param_key] and \
+                    'value' in primary_gui_params[param_key]['conditions'] and \
+                    'UMI' in primary_gui_params[param_key]['conditions']['value'] and \
+                    umi_type in primary_gui_params[param_key]['conditions']['value']['UMI']:
+                settings[param_key] = primary_gui_params[param_key]['conditions']['value']['UMI'][umi_type]
+
+        # Store settings for this UMI type if we have any settings defined
+        if settings:
+            umi_settings[umi_type] = settings
+
+    # Get the UMI type from config
+    umi_type = config.get("UMI")
+
+    # Set the config values based on the UMI type
+    if umi_type in umi_settings:
+        for key, value in umi_settings[umi_type].items():
+            config[key] = value
+
+    return config
+
 
 
 def replace_last_occurrence(s, old, new):
@@ -53,7 +96,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
     sample = snakemake.wildcards.sample
     in_filename = snakemake.input.in_filename
     in_filename_R2 = replace_last_occurrence(in_filename, "_R1", "_R2")
-    config = snakemake.params.config
+    config = load_and_configure_UMI("workflow.config.json",snakemake.params.config)
     umi = config["UMI"]
     print("processing:" + sample + " with UMI: " + umi)
 
@@ -79,7 +122,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
     if R2_UMI_start > R2_UMI_end:
         R2_UMI_start = 0
 
-    if umi != "no_umi" or not config["UMI_from_R3_file"] and (R1_UMI_start != 0 or R2_UMI_start != 0):
+    if umi != "no_umi" and (config["UMI_from_R3_file"] or (R1_UMI_start != 0 or R2_UMI_start != 0)):
         if config["UMI_from_R3_file"]:
             in_filename_UMI = replace_last_occurrence(in_filename, "_R1", "_UMI")
             if not os.path.isfile(in_filename_UMI):
@@ -104,38 +147,38 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
                           " print substr($2,7) > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + unzip_out_R1 + " out2=" + unzip_out_R1 + \
                           " && gzip -f " + unzip_out_R1 + " " + unzip_out_R2 + ") 2>> " + log_filename
         else:
-            if R1_UMI_start != 0: 
-                sub_R1_UMI = "substr($1, "+ R1_UMI_start +","+R1_UMI_end+")"
+            if R1_UMI_start != 0:
+                sub_R1_UMI = "substr($1, "+ str(R1_UMI_start) +","+ str(R1_UMI_end)+")"
             else:
                 sub_R1_UMI = ""
 
             if R2_UMI_start != 0:
-                sub_R2_UMI = "substr($1, " + R2_UMI_start + "," + R2_UMI_end + ")"
+                sub_R2_UMI = "substr($1, " + str(R2_UMI_start) + "," + str(R2_UMI_end) + ")"
             else:
                 sub_R2_UMI = ""
 
             if config["UMI_write_to"] == "fastq_header":
                 command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
                           " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
-                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"_\" umi \" \" head_R1[2] \"\\n\" substr($1," + R1_ins_start + ") > out1;" + \
-                          " print head_R2[1] \"_\" umi \" \" head_R2[2] \"\\n\" substr($2," + R2_ins_start + ") > out2}} else if(NR%4==0) {{print substr($1," + R1_ins_start + ") > out1;" + \
-                          " print substr($2," + R2_ins_start + ") > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + out_R1 + " out2=" + out_R2 + \
+                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"_\" umi \" \" head_R1[2] \"\\n\" substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print head_R2[1] \"_\" umi \" \" head_R2[2] \"\\n\" substr($2," + str(R2_ins_start) + ") > out2}} else if(NR%4==0) {{print substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print substr($2," + str(R2_ins_start) + ") > out2}} else {{print $1 > out1; print $2 > out2}} }}' FS='\\t' out1=" + unzip_out_R1 + " out2=" + unzip_out_R2 + \
                           " && gzip -f " + unzip_out_R1 + " " + unzip_out_R2 + ") 2>> " + log_filename
             elif config["UMI_write_to"] == "sep_file":
                 umi_file = os.path.dirname(snakemake.output.R1) + "/" + sample + ".UMI.fastq"
                 command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
                           " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
-                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"" + sep + "\" head_R1[2] \"\\n\" substr($1," + R1_ins_start + ") > out1;" + \
-                          " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2," + R2_ins_start + ") > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1," + R1_ins_start + ") > out1;" + \
-                          " print substr($2," + R2_ins_start + ") > out2; print " + sub_R1_UMI + sub_R2_UMI + " > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + unzip_out_R2 + " out2=" + unzip_out_R2 + " umi_out=" + umi_file + \
+                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"" + sep + "\" head_R1[2] \"\\n\" substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2," + str(R2_ins_start) + ") > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print substr($2," + str(R2_ins_start) + ") > out2; print " + sub_R1_UMI + sub_R2_UMI + " > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + unzip_out_R1 + " out2=" + unzip_out_R2 + " umi_out=" + umi_file + \
                           " && gzip -f " + unzip_out_R1 + " " + unzip_out_R2 + ") 2>> " + log_filename
             else:
                 umi_file = os.path.dirname(snakemake.output.R1) + "/" + sample + ".UMI.fastq"
                 command = "(paste <(zcat " + in_filename + ") <(zcat " + in_filename_R2 + ") |" + \
                           " awk '{{ if(NR%4==1) {{split($1,head_R1,\"" + sep + "\"); split($2,head_R2,\"" + sep + "\")}}" + \
-                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"" + sep + "\" head_R1[2] \"\\n\" substr($1," + R1_ins_start + ") > out1;" + \
-                          " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2," + R2_ins_start + ") > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1," + R1_ins_start + ") > out1;" + \
-                          " print substr($2," + R2_ins_start + ") > out2; print " + sub_R1_UMI + sub_R2_UMI + " > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + unzip_out_R2 + " out2=" + unzip_out_R2 + " umi_out=" + umi_file + \
+                          " else if(NR%4==2) {{umi=" + sub_R1_UMI + sub_R2_UMI + "; print head_R1[1] \"" + sep + "\" head_R1[2] \"\\n\" substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print head_R2[1] \"" + sep + "\" head_R2[2] \"\\n\" substr($2," + R2_ins_start + ") > out2; print head_R1[1] \"\\n\" umi > umi_out}} else if(NR%4==0) {{print substr($1," + str(R1_ins_start) + ") > out1;" + \
+                          " print substr($2," + str(R2_ins_start) + ") > out2; print " + sub_R1_UMI + sub_R2_UMI + " > umi_out}} else {{print $1 > out1; print $2 > out2; print $1 > umi_out}} }}' FS='\\t' out1=" + unzip_out_R1 + " out2=" + unzip_out_R2 + " umi_out=" + umi_file + \
                           " && gzip -f " + unzip_out_R1 + " " + unzip_out_R2 + " " + umi_file + ") 2>> " + log_filename
     else:
         command = "mv -T " + in_filename + " " + snakemake.output.R1 + "; " + \
