@@ -22,48 +22,6 @@ f.close()
 shell(command)
 
 
-def load_and_configure_UMI(wf_config_path,config):
-    with open(wf_config_path, 'r') as file:
-        wf_config = json.load(file)
-
-    # Extract the primary GUI parameters from the config
-    primary_gui_params = wf_config['gui_params']['primary']
-
-    # Initialize the dictionary to store UMI settings
-    umi_settings = {}
-
-    # The list of parameters we're interested in setting based on UMI type
-    param_keys = [
-        "UMI_write_to","UMI_R1_start", "UMI_R1_end", "insert_R1_start",
-        "UMI_R2_start", "UMI_R2_end", "insert_R2_start"
-    ]
-
-    # Extract values for each UMI type under each parameter key
-    for umi_type in primary_gui_params['UMI']['list'].keys():
-        settings = {}
-        for param_key in param_keys:
-            if 'conditions' in primary_gui_params[param_key] and \
-                    'value' in primary_gui_params[param_key]['conditions'] and \
-                    'UMI' in primary_gui_params[param_key]['conditions']['value'] and \
-                    umi_type in primary_gui_params[param_key]['conditions']['value']['UMI']:
-                settings[param_key] = primary_gui_params[param_key]['conditions']['value']['UMI'][umi_type]
-
-        # Store settings for this UMI type if we have any settings defined
-        if settings:
-            umi_settings[umi_type] = settings
-
-    # Get the UMI type from config
-    umi_type = config.get("UMI")
-
-    # Set the config values based on the UMI type
-    if umi_type in umi_settings:
-        for key, value in umi_settings[umi_type].items():
-            config[key] = value
-
-    return config
-
-
-
 def replace_last_occurrence(s, old, new):
     # Reverse the string (so the last occurrence becomes the first)
     reversed_s = s[::-1]
@@ -96,7 +54,6 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
     sample = snakemake.wildcards.sample
     in_filename = snakemake.input.in_filename
     in_filename_R2 = replace_last_occurrence(in_filename, "_R1", "_R2")
-    config = load_and_configure_UMI("workflow.config.json",snakemake.params.config)
     umi = config["UMI"]
     print("processing:" + sample + " with UMI: " + umi)
 
