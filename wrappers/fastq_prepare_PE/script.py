@@ -54,6 +54,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
     sample = snakemake.wildcards.sample
     in_filename = snakemake.input.in_filename
     in_filename_R2 = replace_last_occurrence(in_filename, "_R1", "_R2")
+    config = snakemake.params.config
     umi = config["UMI"]
     print("processing:" + sample + " with UMI: " + umi)
 
