@@ -1,8 +1,8 @@
-def preprocess_fastq_input(wildcards):
-    if config["UMI"] == "no_umi":
-        return expand("raw_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag)
-    else:
-        return expand("umi_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag)
+# def preprocess_fastq_input(wildcards):
+#     if config["UMI"] == "no_umi":
+#         return expand("raw_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag)
+#     else:
+#         return expand("umi_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag)
 
 
 rule preprocess:
@@ -31,7 +31,9 @@ rule preprocess:
         quality_base=config["quality_base"],
         min_length=config["min_length"],
         max_length=config["max_length"],
-        trim_stats="qc_reports/{sample}/cutadapt/{sample}_preprocessing.log"
+        trim_stats="qc_reports/{sample}/cutadapt/{sample}_preprocessing.log",
+        UMI_write_to=config["UMI_write_to"]
+
     conda: "../wrappers/preprocess/env.yaml"
     script: "../wrappers/preprocess/script.py"
 

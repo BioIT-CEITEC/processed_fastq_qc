@@ -19,7 +19,7 @@
       "logs/merge_fastq_qc.log"
     ],
     "outputs_optional": [
-      "umi_fastq/{sample}.UMI.fastq",
+      "processed_fastq/{sample}.UMI.fastq",
       "logs/filesender.log",
       "qc_reports/{sample}/biobloom/{sample}.biobloom_summary.tsv",
       "logs/{sample}/biobloom.log",

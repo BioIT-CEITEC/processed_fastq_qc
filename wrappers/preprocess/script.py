@@ -3,6 +3,8 @@
 ######################################
 import subprocess
 import os
+
+import snakemake
 from snakemake.shell import shell
 shell.executable("/bin/bash")
 log_filename = str(snakemake.log)
@@ -106,3 +108,21 @@ f = open(log_filename, 'at')
 f.write("## COMMAND: "+command+"\n")
 f.close()
 shell(command)
+
+
+#code to copy UMI files to processed if in seperate files
+if snakemake.params.UMI_write_to == "sep_file":
+    umi_file_base_name = snakemake.wildcards.sample + ".UMI.fastq"
+elif snakemake.params.UMI_write_to == "sep_file_gz":
+    umi_file_base_name = snakemake.wildcards.sample + ".UMI.fastq.gz"
+else:
+    umi_file_base_name = ""
+
+if umi_file_base_name != "" and os.path.exists(os.path.join(os.path.dirname(snakemake.input.fastq[0]),umi_file_base_name)):
+    command = "mv -T " + os.path.join(os.path.dirname(snakemake.input.fastq[0]),umi_file_base_name) + " " +\
+              os.path.join(os.path.dirname(snakemake.output.processed[0]),umi_file_base_name)
+
+    f = open(log_filename, 'at')
+    f.write("## COMMAND: " + command + "\n")
+    f.close()
+    shell(command)
