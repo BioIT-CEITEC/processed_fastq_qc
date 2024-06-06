@@ -29,9 +29,15 @@ paired = BR.set_paired_tags() # "SE" / "PE"
 wildcard_constraints:
     sample = "|".join(sample_tab.sample_name)
 
+def all_input(wildcard):
+    if config["filesender"]:
+        return ["sequencing_results.tar.gz","qc_reports/processed_fastq_multiqc.html"]
+    else:
+        return "qc_reports/processed_fastq_multiqc.html"
+
 ##### Target rules #####
 rule all:
-    input: "qc_reports/processed_fastq_multiqc.html"
+    input: all_input
 
 ##### Modules #####
 
