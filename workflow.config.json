@@ -220,7 +220,8 @@
         "list": {
           "33": "phred-33",
           "64": "phred-64"
-        },
+      }
+    },
       "filesender": {
         "label": "FileSender",
         "type": "bool",
@@ -257,4 +258,3 @@
       }
     }
   }
-}
