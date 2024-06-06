@@ -44,7 +44,7 @@ def all_input(wildcard):
 
 ##### Target rules #####
 rule all:
-    input: "qc_reports/processed_fastq_multiqc.html"
+    input: all input
 
 
 

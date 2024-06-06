@@ -39,7 +39,7 @@ rule preprocess:
 
 rule filesender:
     input:  raw_fastq = "raw_fastq/",
-            html = expand("qc_reports/{sample}/raw_fastqc/{read_pair_tag}_fastqc.html",sample = sample_tab.sample_name, read_pair_tag = read_pair_tags),
+            html = expand("qc_reports/{sample}/processed_fastqc/{read_pair_tags}_trim_fastqc.html",sample=sample_tab.sample_name,read_pair_tags=read_pair_tags)
     output: gz = "sequencing_results.tar.gz"
     log:    "logs/filesender.log"
     params: recipient = config["recipient"],
