@@ -62,3 +62,15 @@ rule preprocess:
     conda: "../wrappers/preprocess/env.yaml"
     script: "../wrappers/preprocess/script.py"
 
+rule filesender:
+    input:  raw_fastq = "raw_fastq/",
+            html = expand("qc_reports/{sample}/raw_fastqc/{read_pair_tag}_fastqc.html",sample = sample_tab.sample_name, read_pair_tag = read_pair_tags),
+    output: gz = "qc_reports/raw_fastq_qc.tar.gz"
+    log:    "logs/filesender.log"
+    params: recipient = config["recipient"],
+            subject = config["entity_name"],
+            message = config["message"],
+            credentials = GLOBAL_REF_PATH + "/reference_info/filesender/filesender_params.json",
+            res_file = "qc_reports/"
+    conda:  "../wrappers/filesender/env.yaml"
+    script: "../wrappers/filesender/script.py"

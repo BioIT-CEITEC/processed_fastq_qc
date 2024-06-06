@@ -220,6 +220,25 @@
         "list": {
           "33": "phred-33",
           "64": "phred-64"
+        },
+        "filesender": {
+          "label": "FileSender",
+          "type": "bool",
+          "default": false
+        },
+        "recipient": {
+          "label": "Send results to (comma separated list of emails):",
+          "type": "string",
+          "default": "cfg@ceitec.muni.cz",
+          "conditions": {
+            "relevance": {
+              "operand": "equal",
+              "negation": false,
+              "values": {
+                "filesender": true
+              }
+            }
+          }
         }
       }
     }
