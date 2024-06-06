@@ -44,7 +44,7 @@ def all_input(wildcard):
 
 ##### Target rules #####
 rule all:
-    input: all input
+    input: all_input
 
 
 
