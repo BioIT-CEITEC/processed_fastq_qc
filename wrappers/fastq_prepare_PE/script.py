@@ -111,7 +111,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
                 sub_R1_UMI = ""
 
             if R2_UMI_start != 0:
-                sub_R2_UMI = "substr($1, " + str(R2_UMI_start) + "," + str(R2_UMI_end) + ")"
+                sub_R2_UMI = "substr($2, " + str(R2_UMI_start) + "," + str(R2_UMI_end) + ")"
             else:
                 sub_R2_UMI = ""
 
