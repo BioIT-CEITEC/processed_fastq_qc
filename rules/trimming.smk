@@ -38,7 +38,7 @@ rule preprocess:
     script: "../wrappers/preprocess/script.py"
 
 rule filesender:
-    input:  processed_fastq = "processed_fastq/",
+    input:  processed_fastq = expand("processed_fastq/{sample}{read_tags}.fastq.gz", sample = sample_tab.sample_name,read_tags=pair_tag),
             html = expand("qc_reports/{sample}/processed_fastqc/{read_pair_tags}_trim_fastqc.html",sample=sample_tab.sample_name,read_pair_tags=read_pair_tags)
     output: gz = "sequencing_results.tar.gz"
     log:    "logs/filesender.log"
@@ -46,6 +46,7 @@ rule filesender:
             subject = config["entity_name"],
             message = config["message"],
             credentials = GLOBAL_REF_PATH + "/reference_info/filesender/filesender_params.json",
-            res_file = "qc_reports/"
+            res_file = "qc_reports/",
+            res_processed = "processed_fastq/"
     conda:  "../wrappers/filesender/env.yaml"
     script: "../wrappers/filesender/script.py"
