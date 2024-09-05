@@ -21,7 +21,7 @@ use rule * from BR as other_*
 sample_tab = BR.load_sample()
 
 read_pair_tags = BR.set_read_pair_qc_tags() # ["SE"] / ["R1", "R2"]
-pair_tag = BR.set_read_pair_tags() # [""] / ["_R1", "_R2"]
+pair_tag = BR.set_read_pair_dmtex_tags() # ["_R1"] / ["_R1", "_R2"]
 paired = BR.set_paired_tags() # "SE" / "PE"
 config = BR.load_and_configure_UMI("workflow.config.json")
 
