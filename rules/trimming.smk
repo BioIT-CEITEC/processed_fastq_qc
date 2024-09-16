@@ -6,7 +6,7 @@
 
 
 rule preprocess:
-    input: fastq=expand("umi_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag_dmtex),
+    input: fastq=expand("umi_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag),
     output: processed=expand("processed_fastq/{{sample}}{read_tags}.fastq.gz",read_tags=pair_tag),
     log: "logs/{sample}/preprocessing.log"
     threads: 10
