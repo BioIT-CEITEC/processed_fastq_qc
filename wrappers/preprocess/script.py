@@ -52,7 +52,7 @@ shell(command)
 cut_flags = ""
 if int(snakemake.params.cut_left1) != 0 or int(snakemake.params.cut_right1) != 0:
     cut_flags = " -u "+str(abs(snakemake.params.cut_left1)) if int(snakemake.params.cut_left1) != 0 else ""
-    cut_flags += " -u "+str(snakemake.params.cut_right1) if int(snakemake.params.cut_right1) != 0 else ""
+    cut_flags += " -u "+str(-abs(snakemake.params.cut_right1)) if int(snakemake.params.cut_right1) != 0 else ""
 
 if is_paired:
     if int(snakemake.params.cut_left1) != 0 or int(snakemake.params.cut_right1) != 0 or int(snakemake.params.cut_left2) != 0 or int(snakemake.params.cut_right2) != 0:
