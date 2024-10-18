@@ -6,11 +6,11 @@ def merge_fastq_qc_input(wcs):
         inputs['sp_det'] = "qc_reports/species_detector_summary_mqc.tsv"
     return inputs
 
-
 rule merge_fastq_qc:
     input: unpack(merge_fastq_qc_input)
     output: html="qc_reports/processed_fastq_multiqc.html"
     log: "logs/merge_fastq_qc.log"
+    params: trim_adapters = config["trim_adapters"]
     conda: "../wrappers/merge_fastq_qc/env.yaml"
     script: "../wrappers/merge_fastq_qc/script.py"
 
@@ -32,4 +32,3 @@ rule processed_fastq_qc:
     threads: 2
     conda: "../wrappers/processed_fastq_qc/env.yaml"
     script: "../wrappers/processed_fastq_qc/script.py"
-
