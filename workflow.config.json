@@ -12,7 +12,6 @@
     "outputs": [
       "processed_fastq/{sample}*fastq.gz",
       "logs/{sample}/preprocessing.log",
-      "qc_reports/{sample}/cutadapt/{sample}_preprocessing.log",
       "qc_reports/processed_fastq_multiqc.html",
       "qc_reports/{sample}/processed_fastqc/*",
       "logs/{sample}/processed_fastqc_*.log",
@@ -21,6 +20,7 @@
     "outputs_optional": [
       "processed_fastq/{sample}.UMI.fastq",
       "logs/filesender.log",
+      "qc_reports/{sample}/cutadapt/{sample}_preprocessing.log",
       "qc_reports/{sample}/biobloom/{sample}.biobloom_summary.tsv",
       "logs/{sample}/biobloom.log",
       "qc_reports/species_detector_summary_mqc.tsv",
