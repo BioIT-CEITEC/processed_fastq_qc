@@ -16,7 +16,12 @@ f = open(log_filename, 'at')
 f.write("## CONDA: "+version+"\n")
 f.close()
 
-search_path = " ".join([dirname(fastqc_html) for fastqc_html in snakemake.input.html]) + " ./qc_reports/*/cutadapt/*"
+if snakemake.params.trim_adapters:
+  cutadapt_path = " ./qc_reports/*/cutadapt/*"
+else:
+  cutadapt_path = ""
+
+search_path = " ".join([dirname(fastqc_html) for fastqc_html in snakemake.input.html]) + cutadapt_path
 if hasattr(snakemake.input, 'biobloom'):
     search_path += " "+" ".join([dirname(biobloom_tsv) for biobloom_tsv in snakemake.input.biobloom])
 if hasattr(snakemake.input, 'sp_det'):
