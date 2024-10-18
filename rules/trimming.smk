@@ -45,8 +45,6 @@ rule filesender:
     params: recipient = config["recipient"],
             subject = config["entity_name"],
             message = config["message"],
-            credentials = GLOBAL_REF_PATH + "/reference_info/filesender/filesender_params.json",
-            res_file = "qc_reports/",
-            res_processed = "processed_fastq/"
+            credentials = GLOBAL_REF_PATH + "/reference_info/filesender/filesender_params.json"
     conda:  "../wrappers/filesender/env.yaml"
     script: "../wrappers/filesender/script.py"
