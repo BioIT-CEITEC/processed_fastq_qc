@@ -23,7 +23,7 @@ ff.close()
 username = filesender_credentials["username"]
 apikey = filesender_credentials["apikey"]
 
-command = "tar -czvf " + snakemake.output.gz + " " + snakemake.params.res_processed + "* " + snakemake.params.res_file + "* >> " + log_filename + " 2>&1"
+command = "tar -czvf " + snakemake.output.gz + " processed_fastq/* qc_reports/* >> " + log_filename + " 2>&1"
 f = open(log_filename, 'at')
 f.write("## COMMAND: " + command + "\n")
 f.close()
