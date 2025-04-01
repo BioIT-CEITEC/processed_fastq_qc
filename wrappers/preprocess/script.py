@@ -67,7 +67,7 @@ simpleClipThreshold = 10
 if snakemake.params.trim_adapters:
   if snakemake.params.trim_adapter_select == "illumina":
     #adapter_list = "1-AGATCGGAAGAGCACACGTCTGAACTCCAGTCA,2-AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
-    adapter_list = "1-AGATCGGAAGAGCACACGTCT,2-AGATCGGAAGAGCGTCGTGTA"
+    adapter_list = "1-AGATCGGAAGAG,2-AGATCGGAAGAG,TAGATCGGAAGA"
   if snakemake.params.trim_adapter_select == "nextera":
     adapter_list = "CTGTCTCTTATACACATCT"
   if snakemake.params.trim_adapter_select == "smallRNA":
@@ -96,11 +96,11 @@ if adapter_list != "":
 else:
     adapter_flags = ""
 
-command = "cutadapt -j " + str(snakemake.threads) + " --quality-base=" + str(snakemake.params.quality_base) + " \
-                -q " + str(snakemake.params.quality_trim) + " -m " + str(snakemake.params.min_length)+ " \
-                --too-short-output " + fastq_u1 + fastq_u2 + "\
-                -M " + str(snakemake.params.max_length) + cut_flags + adapter_flags + " \
-                -o " + fastq_c1 + fastq_c2 + " " + fastq_r1 + " " + fastq_r2 + " >> " + str(snakemake.params.trim_stats) + " 2>&1 "
+command = "cutadapt -j " + str(snakemake.threads) + " --quality-base=" + str(snakemake.params.quality_base) + \
+          " -q " + str(snakemake.params.quality_trim) + " -m " + str(snakemake.params.min_length)+ \
+          " --too-short-output " + fastq_u1 + fastq_u2 + \
+          " -M " + str(snakemake.params.max_length) + cut_flags + adapter_flags + \
+          " -o " + fastq_c1 + fastq_c2 + " " + fastq_r1 + " " + fastq_r2 + " >> " + str(snakemake.params.trim_stats) + " 2>&1 "
 
 f = open(log_filename, 'at')
 f.write("## COMMAND: "+command+"\n")
