@@ -144,7 +144,7 @@
         }
       },
       "UMI_R1_end": {
-        "label": "End of UMI in R1.",
+        "label": "Length of UMI in R1.",
         "type": "int",
         "default": 0,
         "conditions": {
@@ -225,7 +225,7 @@
         }
       },
       "UMI_R2_end": {
-        "label": "End of UMI in R2.",
+        "label": "Length of UMI in R2.",
         "type": "int",
         "default": 0,
         "conditions": {
