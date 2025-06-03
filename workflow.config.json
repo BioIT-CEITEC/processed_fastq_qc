@@ -1,7 +1,7 @@
 {
   "workflow_description": {
     "name": "processed_fastq_qc",
-    "version": 2.0,
+    "version": 2.1,
     "label": "Processed fastq QC",
     "type": "processed_fastq_qc",
     "run_parameters": {
@@ -38,7 +38,9 @@
     "sample_name"
   ],
   "requested_params": [
-    "is_paired"
+    "is_paired",
+    "lib_forward_read_length",
+    "lib_reverse_read_length"
   ],
   "gui_params": {
     "primary": {
