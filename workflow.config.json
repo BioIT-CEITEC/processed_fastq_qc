@@ -10,12 +10,17 @@
     },
     "inputs": "raw_fastq/{sample}*fastq.gz",
     "outputs": [
+      "libsize_fastq/{sample}*.fastq.gz",
+      "logs/{sample}/libsizetrimming.log",
       "processed_fastq/{sample}*fastq.gz",
       "logs/{sample}/preprocessing.log",
       "qc_reports/{sample}/cutadapt/{sample}_preprocessing.log",
+      "qc_reports/{sample}/cutadapt/{sample}_libsizetrimming.log",
       "qc_reports/processed_fastq_multiqc.html",
       "qc_reports/{sample}/processed_fastqc/*",
       "logs/{sample}/processed_fastqc_*.log",
+      "qc_reports/{sample}/libsize_fastqc/*",
+      "logs/{sample}/libsize_fastqc_*.log",
       "logs/merge_fastq_qc.log"
     ],
     "outputs_optional": [
@@ -447,6 +452,48 @@
         "label": "Send results to (comma separated list of emails):",
         "type": "string",
         "default": "cfg@ceitec.muni.cz",
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "filesender": true
+            }
+          }
+        }
+      },
+      "filesender_raw": {
+        "label": "Raw fastq",
+        "type": "bool",
+        "default": false,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "filesender": true
+            }
+          }
+        }
+      },
+      "filesender_libsize": {
+        "label": "Raw fastq cut to library size",
+        "type": "bool",
+        "default": false,
+        "conditions": {
+          "relevance": {
+            "operand": "equal",
+            "negation": false,
+            "values": {
+              "filesender": true
+            }
+          }
+        }
+      },
+      "filesender_processed": {
+        "label": "Processed fastq",
+        "type": "bool",
+        "default": false,
         "conditions": {
           "relevance": {
             "operand": "equal",

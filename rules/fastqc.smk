@@ -1,5 +1,8 @@
 def merge_fastq_qc_input(wcs):
-    inputs = {'html': expand("qc_reports/{sample}/processed_fastqc/{read_pair_tag}_trim_fastqc.html",sample = sample_tab.sample_name, read_pair_tag = read_pair_tags)}
+    inputs = {
+        'trim': expand("qc_reports/{sample}/processed_fastqc/{read_pair_tag}_trim_fastqc.html",sample = sample_tab.sample_name, read_pair_tag = read_pair_tags),
+        'cut': expand("qc_reports/{sample}/libsize_fastqc/{read_pair_tag}_cut_fastqc.html",sample = sample_tab.sample_name, read_pair_tag = read_pair_tags)
+        }
     if config['biobloom']:
         inputs['biobloom'] = expand("qc_reports/{sample}/biobloom/{sample}.biobloom_summary.tsv",sample = sample_tab.sample_name)
     if config['species_detector']:
@@ -11,6 +14,7 @@ rule merge_fastq_qc:
     input: unpack(merge_fastq_qc_input)
     output: html="qc_reports/processed_fastq_multiqc.html"
     log: "logs/merge_fastq_qc.log"
+    params: multiqc_config = workflow.basedir+"/wrappers/multiqc_report/multiqc_config.txt"
     conda: "../wrappers/merge_fastq_qc/env.yaml"
     script: "../wrappers/merge_fastq_qc/script.py"
 
@@ -33,3 +37,20 @@ rule processed_fastq_qc:
     conda: "../wrappers/processed_fastq_qc/env.yaml"
     script: "../wrappers/processed_fastq_qc/script.py"
 
+def libsize_fastq_qc_input(wildcards):
+    preprocessed = "libsize_fastq"
+    if read_pair_tags == ["SE"]:
+        return os.path.join(preprocessed,"{sample}.fastq.gz")
+    else:
+        return os.path.join(preprocessed,"{sample}_{read_pair_tags}.fastq.gz")
+
+
+rule libsize_fastq_qc:
+    input: processed=libsize_fastq_qc_input,
+    output: html="qc_reports/{sample}/libsize_fastqc/{read_pair_tags}_cut_fastqc.html",
+    log: "logs/{sample}/libsize_fastqc_{read_pair_tags}.log"
+    params: extra="--noextract --format fastq --nogroup",
+        paired=config["is_paired"]
+    threads: 2
+    conda: "../wrappers/processed_fastq_qc/env.yaml"
+    script: "../wrappers/processed_fastq_qc/script.py"

@@ -90,7 +90,7 @@ if adapter_list != "":
             if adapter.split("-")[0] != "1":
                 adapter_file2.write(">adapt" + str(i) + "\n")
                 adapter_file2.write(adapter.replace("2-","") + "\n")
-    adapter_flags = " -" + snakemake.params.adapter_type + " file:" + os.path.dirname(fastq_c1) + "/adapter1.fa "
+    adapter_flags = " --error-rate " + snakemake.params.max_error + " --overlap " + snakemake.params.min_overlap + " -" + snakemake.params.adapter_type + " file:" + os.path.dirname(fastq_c1) + "/adapter1.fa "
     if is_paired:
       adapter_flags = adapter_flags + " -" + snakemake.params.adapter_type.upper() + " file:" + os.path.dirname(fastq_c1) + "/adapter2.fa "
 else:

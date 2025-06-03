@@ -1,0 +1,20 @@
+read_count_multiplier: 0.001
+read_count_prefix: 'K'
+read_count_desc: 'thousands'
+module_order:
+    -cutadapt:
+        name: "Cut raw reads to library size"
+        path_filters:
+        - "*_libsizetrimming.log"
+    - fastqc:
+        name: "Lib. size fastQC"
+        path_filters:
+        - "*_cut_fastqc.zip"
+    -cutadapt:
+        name: "Trim reads from adapter"
+        path_filters:
+        - "*_preprocessing.log"
+    - fastqc:
+        name: "Processed fastQC"
+        path_filters:
+        - "*_trim_fastqc.zip"
