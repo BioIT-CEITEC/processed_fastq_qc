@@ -40,12 +40,12 @@
   },
   "general_params": [
     "entity_name",
-    "sample_name"
-  ],
-  "requested_params": [
-    "is_paired",
+    "sample_name",
     "lib_forward_read_length",
     "lib_reverse_read_length"
+  ],
+  "requested_params": [
+    "is_paired"
   ],
   "gui_params": {
     "primary": {
