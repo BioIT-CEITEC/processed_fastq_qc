@@ -10,7 +10,7 @@ rule trimtolibsize:
     log: "logs/{sample}/libsizetrimming.log"
     threads: 10
     resources: mem=10
-    params: trim_adapters=false, # No adapter trimming
+    params: trim_adapters=False, # No adapter trimming
         quality_trim="0", # No quality trimming
         r1u="libsize_fastq/trimmed/{sample}_R1.discarded.fastq.gz",
         r2u="libsize_fastq/trimmed/{sample}_R2.discarded.fastq.gz",
