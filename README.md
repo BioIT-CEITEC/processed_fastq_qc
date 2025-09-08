@@ -3,9 +3,6 @@
 This repository contains a Snakemake workflow for processing and quality control (QC) of FastQ files from sequencing experiments. The workflow is modular, highly configurable, and supports both single-end (SE) and paired-end (PE) data. It integrates several bioinformatics tools and custom scripts for preprocessing, QC, species detection, and reporting.
 
 ## Features
-- **Configurable via JSON:** All parameters and paths are set in `workflow.config.json`.
-- **Modular Rules:** Workflow is split into rules for fastq preparation, trimming, QC, species detection, and reporting.
-- **Conda Environments:** Each major step uses its own conda environment for reproducibility.
 - **Support for UMI:** Handles Unique Molecular Identifiers (UMIs) if present.
 - **Species Detection:** Optional module for species detection using BioBloom and BLAST.
 - **MultiQC Reporting:** Generates a comprehensive HTML report summarizing QC metrics.
