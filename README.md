@@ -23,13 +23,13 @@ This repository contains a Snakemake workflow for processing and quality control
    - Packages results for transfer.
 
 ## Directory Structure
-- `Snakefile` — Main workflow file.
-- `workflow.config.json` — Configuration file.
-- `rules/` — Snakemake rule files for each workflow step.
-- `wrappers/` — Scripts and conda environments for each step.
-- `qc_reports/` — Output directory for QC results and reports.
-- `processed_fastq/` — Output directory for processed FastQ files.
-- `logs/` — Log files for each step.
+- `Snakefile`: Main workflow file.
+- `workflow.config.json`: Configuration file.
+- `rules/`: Snakemake rule files for each workflow step.
+- `wrappers/`: Scripts and conda environments for each step.
+- `qc_reports/`: Output directory for QC results and reports.
+- `processed_fastq/`: Output directory for processed FastQ files.
+- `logs/`: Log files for each step.
 
 ## Usage
 1. **Configure the workflow:**
