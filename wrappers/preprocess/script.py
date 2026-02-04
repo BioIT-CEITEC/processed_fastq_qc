@@ -61,6 +61,12 @@ if is_paired:
         cut_flags += " -U " + str(abs(snakemake.params.cut_left2)) if int(snakemake.params.cut_left2) != 0 else ""
         cut_flags += " -U " + str(-abs(snakemake.params.cut_right2)) if int(snakemake.params.cut_right2) != 0 else ""
 
+# Set the command part related to quality for R2
+if is_paired:
+    qual_R2 = " -Q " + str(snakemake.params.quality_trim)
+else:
+    qual_R2 = ""
+
 simpleClipThreshold = 10
 # TODO: check for better settings (see: http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf starting at page 5, or http://www.usadellab.org/cms/?page=trimmomatic)
 
@@ -97,7 +103,7 @@ else:
     adapter_flags = ""
 
 command = "cutadapt -j " + str(snakemake.threads) + " --quality-base=" + str(snakemake.params.quality_base) + \
-          " -q " + str(snakemake.params.quality_trim) + " -m " + str(snakemake.params.min_length)+ \
+          " -q " + str(snakemake.params.quality_trim) + qual_R2 + " -m " + str(snakemake.params.min_length)+ \
           " --too-short-output " + fastq_u1 + fastq_u2 + \
           " -M " + str(snakemake.params.max_length) + cut_flags + adapter_flags + \
           " -o " + fastq_c1 + fastq_c2 + " " + fastq_r1 + " " + fastq_r2 + " >> " + str(snakemake.params.trim_stats) + " 2>&1 "
