@@ -1,7 +1,7 @@
 {
   "workflow_description": {
     "name": "processed_fastq_qc",
-    "version": 2.0,
+    "version": 2.0.1,
     "label": "Processed fastq QC",
     "type": "processed_fastq_qc",
     "run_parameters": {
@@ -425,7 +425,7 @@
       "max_length": {
         "label": "Max length",
         "type": "int",
-        "default": 250
+        "default": 350
       },
       "quality_base": {
         "label": "Quality base",
