@@ -425,7 +425,7 @@
       "max_length": {
         "label": "Max length",
         "type": "int",
-        "default": 250
+        "default": 350
       },
       "quality_base": {
         "label": "Quality base",
