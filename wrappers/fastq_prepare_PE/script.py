@@ -6,6 +6,7 @@ import subprocess
 import sys
 from snakemake.shell import shell
 import json
+import glob
 
 log_filename = str(snakemake.log)
 
@@ -82,9 +83,37 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
 
     if umi != "no_umi" and (config["UMI_from_R3_file"] or (R1_UMI_start != 0 or R2_UMI_start != 0)):
         if config["UMI_from_R3_file"]:
-            in_filename_UMI = replace_last_occurrence(in_filename, "_R1", "_UMI")
-            if not os.path.isfile(in_filename_UMI):
-                sys.exit("UMI from extra fastq specified, but it doesn't exist.")
+            # Try different UMI file naming patterns in priority order:
+            # 1. <sample>_R3.fastq.gz
+            # 2. <sample>_UMI.fastq.gz
+            # 3. <sample>_UMI_*.fastq.gz (wildcard match)
+            base_dir = os.path.dirname(in_filename)
+            sample_base = os.path.basename(in_filename).replace("_R1.fastq.gz", "").replace("_R1.fastq", "")
+
+            in_filename_UMI = None
+
+            # Pattern 1: _R3
+            candidate = os.path.join(base_dir, f"{sample_base}_R3.fastq.gz")
+            if os.path.isfile(candidate):
+                in_filename_UMI = candidate
+
+            # Pattern 2: _UMI
+            if in_filename_UMI is None:
+                candidate = os.path.join(base_dir, f"{sample_base}_UMI.fastq.gz")
+                if os.path.isfile(candidate):
+                    in_filename_UMI = candidate
+
+            # Pattern 3: _UMI_* (wildcard)
+            if in_filename_UMI is None:
+                wildcard_pattern = os.path.join(base_dir, f"{sample_base}_UMI_*.fastq.gz")
+                matches = glob.glob(wildcard_pattern)
+                if len(matches) == 1:
+                    in_filename_UMI = matches[0]
+                elif len(matches) > 1:
+                    sys.exit(f"Multiple UMI files found matching '{wildcard_pattern}': {matches}. Please use a specific naming pattern.")
+
+            if in_filename_UMI is None:
+                sys.exit(f"UMI from extra fastq specified, but no matching file found. Searched: {sample_base}_R3.fastq.gz, {sample_base}_UMI.fastq.gz, {sample_base}_UMI_*.fastq.gz")
 
             if config["UMI_write_to"] == "sep_file":
                 umi_file = os.path.dirname(snakemake.output.R1) + "/" + sample + ".UMI.fastq"
