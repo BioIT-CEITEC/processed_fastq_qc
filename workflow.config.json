@@ -30,7 +30,8 @@
     ],
     "report_index": "qc_reports/processed_fastq_multiqc.html",
     "reports": [
-      "qc_reports/*"
+      "qc_reports/*",
+      "logs/*"
     ]
   },
   "general_params": [
