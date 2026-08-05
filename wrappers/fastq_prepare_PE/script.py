@@ -7,6 +7,7 @@ import sys
 from snakemake.shell import shell
 import json
 import glob
+import gzip
 
 log_filename = str(snakemake.log)
 
@@ -50,8 +51,11 @@ def get_header_separator_character(in_filename):
 
     return sep
 
+with gzip.open(snakemake.input.in_filename, 'rt') as f:
+    has_content = bool(f.read(1))  # Check if at least 1 byte of content exists
 
-if os.stat(snakemake.input.in_filename).st_size != 0:
+# if os.stat(snakemake.input.in_filename).st_size != 0:
+if has_content != False:
     sample = snakemake.wildcards.sample
     in_filename = snakemake.input.in_filename
     in_filename_R2 = replace_last_occurrence(in_filename, "_R1", "_R2")
@@ -172,6 +176,7 @@ if os.stat(snakemake.input.in_filename).st_size != 0:
                   "mv -T " + in_filename_R2 + " " + snakemake.output.R2
 
 else:
+    print("empty file")
     command = "touch " + snakemake.output.R1 + " && touch " + snakemake.output.R2
 
 f = open(log_filename, 'at')
